@@ -1,8 +1,8 @@
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import v
 
 
-filename=r"c:\Users\Administrator\Desktop\机器学习\lesson4\testSet.txt"
+filename=r"C:\Users\E507\Desktop\logsitic\logistic.py"
 #=====================
 # 1. 数据读取函数
 #=====================
@@ -31,7 +31,22 @@ def replace_nan_with_mean(X):
 # 3. 主流程
 #=====================
 # 读取训练集
-
+def main():
+    X,y=load_data(path)
+    print("===使用梯度下降训练 Logistic 回归 ===")
+    w_gd=gradient_descent_logistic(X,y,lr=0.001,n_iters=8000)
+    print(f"\n[GD] learned w={w_gd}")
+    clf=LogisticRegression(solver="lbfgs",max_iter=5000)
+    clf.fit(X,y)
+    print(f"[sklearn] coef_={clf.coef_},intercept_={clf.intercept_}")
+    y_pred_gd=(sigmoid(np.c_[np.ones((X.shape[0],1)),X]@w_gd)>=0.5).astype(int)
+    acc_gd=np.mean(y_pred_gd==y)
+    y_pred_sk=clf.predict(X)
+    acc_sk=np.mean(y_pred_sk==y)
+    print(f"\n训练集准确率:")
+    print(f"自写 GD Logistic 回归 accuracy={acc_gd:.4f}")
+    print(f"sklearn LogisticRegression accuracy={acc_sk:.4f}")
+    plot_compare_boumdaries(X,y,w_gd,clf)
 
 # 读取测试集
 
